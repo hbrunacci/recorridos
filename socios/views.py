@@ -13,6 +13,10 @@ from cruds_adminlte.filter import FormFilter
 
 from .forms import DomicilioForm, SociosForm
 
+class IndexView(TemplateView):
+    template_name = 'index.html'
+
+
 class Domicilio_AjaxCRUD(InlineAjaxCRUD):
     model = Domicilio
     base_model = Socios
@@ -21,6 +25,13 @@ class Domicilio_AjaxCRUD(InlineAjaxCRUD):
     update_form = DomicilioForm
     fields = ['address', 'city']
     title = _("Direcciones")
+
+
+class SociosFormFilter(forms.Form):
+    Direccion = forms.ModelMultipleChoiceField(queryset=Domicilio.objects.all())
+
+class filterSocios(FormFilter):
+    form = SociosFormFilter
 
 class SociosCRUD(CRUDView):
     model = Socios
@@ -32,3 +43,14 @@ class SociosCRUD(CRUDView):
     list_fields = ['apellidos','nombres']
     display_fields = ['apellidos','nombres']
     inlines = [Domicilio_AjaxCRUD]
+    list_filter = ['categoria', 'fecha_ingreso',
+                   'fecha_nacimiento', filterSocios]
+    #  views_available = ['create', 'list',  'detail'] # original actions
+    views_available = ['create', 'list', 'update', 'detail', 'delete']
+    search_fields = ['numero_documento']
+    split_space_search = True
+    paginate_by = 1
+    paginate_position = 'Bottom'  # Both | Bottom
+    paginate_template = 'cruds/pagination/enumeration.html'
+
+
