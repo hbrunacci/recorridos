@@ -1,0 +1,7 @@
+foo = Categorias(descripcion='Activo Pleno');foo.save();
+foo = Categorias(descripcion='Activo Simple');foo.save();
+foo = Categorias(descripcion='Menor Pleno');foo.save();
+foo = Categorias(descripcion='Menor Simple');foo.save();
+foo = Categorias(descripcion='Vitalicio');foo.save();
+foo = Categorias(descripcion='infantil');foo.save();
+

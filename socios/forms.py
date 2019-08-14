@@ -11,7 +11,7 @@ from cruds_adminlte import (DatePickerWidget,
                             ColorPickerWidget,
                             CKEditorWidget)
 
-from .models import Domicilio,Socios
+from .models import Domicilio, Socios, Filtro
 
 
 class DomicilioForm(forms.ModelForm):
@@ -48,12 +48,51 @@ class DomicilioForm(forms.ModelForm):
             )
         )
 
+class FiltrosForm(forms.ModelForm):
+    class Meta:
+        model = Filtro
+        fields = '__all__'
+        widgets = {
+            'fecha_nacimiento_desde': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
+            'fecha_nacimiento_hasta': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
+            'fecha_socio_desde': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
+            'fecha_socio_hasta': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(FiltrosForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Field('nombre_filtro',wrapper_class="col-md-4"),
+            Field('usuario', wrapper_class="col-md-3"),
+            Field('categoria', wrapper_class="col-md-5"),
+            Field('fecha_nacimiento_desde', wrapper_class="col-md-4"),
+            Field('fecha_nacimiento_hasta', wrapper_class="col-md-4"),
+            Field('fecha_socio_desde', wrapper_class="col-md-4"),
+            Field('fecha_socio_hasta', wrapper_class="col-md-4"),
+            Field('fecha_nacimiento', wrapper_class="col-md-4"),
+            Field('codigo_postal', wrapper_class="col-md-4"),
+        )
+
+        self.helper.layout.append(
+            FormActions(
+                Submit('submit', _('Submit'), css_class='btn btn-primary'),
+                HTML("""{% load i18n %}<a class="btn btn-danger"
+                        href="{{ url_delete }}">{% trans 'Delete' %}</a>"""),
+            )
+        )
 
 class SociosForm(forms.ModelForm):
 
     class Meta:
         model = Socios
         fields = '__all__'
+        widgets = {
+
+            'comentarios': CKEditorWidget(attrs={'lang': 'es'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(SociosForm, self).__init__(*args, **kwargs)
@@ -61,18 +100,19 @@ class SociosForm(forms.ModelForm):
         self.helper.form_tag = False
 
         self.helper.layout = Layout(
-            Field('nro_socio', wrapper_class="col-md-4"),
-            Field('apellidos', wrapper_class="col-md-4"),
+            Field('nro_socio', wrapper_class="col-md-3"),
+            Field('apellidos', wrapper_class="col-md-5"),
             Field('nombres ', wrapper_class="col-md-4"),
             Field('tipo_documento ', wrapper_class="col-md-4"),
             Field('numero_documento ', wrapper_class="col-md-4"),
             Field('categoria', wrapper_class="col-md-4"),
             Field('fecha_nacimiento ', wrapper_class="col-md-4"),
-            Field('fecha_ingreso', wrapper_class="col-md-4"),
-            Field('domicilio_particular ', wrapper_class="col-md-4"),
+            Field('fecha_ingreso', wrapper_class="col-md-8"),
+            Field('domicilio_particular ', wrapper_class="col-md-8"),
             Field('telefono ', wrapper_class="col-md-4"),
             Field('telefono_aux ', wrapper_class="col-md-4"),
-            Field('email', wrapper_class="col-md-4"),
+            Field('email', wrapper_class="col-md-6"),
+            Field('comentario',wrapper_class="col-md-12"),
         )
 
         self.helper.layout.append(

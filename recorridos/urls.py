@@ -17,20 +17,31 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
-from socios.views import SociosCRUD, IndexView
+from socios.views import SociosCRUD, FiltroCRUD, IndexView
 from django.apps import apps
 from cruds_adminlte.urls import crud_for_model
 
+from cruds_adminlte.urls import crud_for_app
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 
 socioscrud = SociosCRUD()
+filtroscrud = FiltroCRUD()
 
 urlpatterns = [
     url(r'^$', IndexView.as_view()),
     path('admin/', admin.site.urls),
     url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
     path(r'', include(socioscrud.get_urls())),
+    path(r'', include(filtroscrud.get_urls())),
 ]
+
+
+urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
+
+print(socioscrud.get_urls())
+print(filtroscrud.get_urls())
+
+
 
 #urlpatterns += crud_for_model(apps.get_model('socios', 'Socios'))

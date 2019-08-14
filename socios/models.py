@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User, Group
 
 # Create your models here.
 
@@ -60,7 +61,30 @@ class Socios(Personas):
     nro_socio = models.CharField(max_length=10, verbose_name='Numero de Socio')
     categoria = models.CharField(max_length=20, verbose_name='Categoria')
     fecha_ingreso = models.DateField(verbose_name='Fecha de Ingreso')
+    comentarios = models.TextField()
 
     class Meta:
         verbose_name = 'Socio'
         verbose_name_plural = 'Socios'
+
+class Categorias(BaseModel):
+    descripcion = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.descripcion
+
+class Filtro(BaseModel):
+    nombre_filtro = models.CharField(max_length=50)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    grupo = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE, blank=True)
+    fecha_nacimiento_desde = models.DateField(null=True, blank=True)
+    fecha_nacimiento_hasta = models.DateField(null=True, blank=True)
+    fecha_socio_desde = models.DateField(null=True, blank=True)
+    fecha_socio_hasta = models.DateField(null=True, blank=True)
+    codigo_postal = models.CharField(max_length=20, null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Filtros'
+        verbose_name = 'Filtro'
+        ordering = ['-usuario']
