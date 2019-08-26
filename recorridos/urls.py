@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,re_path
 from django.conf.urls import url, include
 from socios.views import SociosCRUD, FiltroCRUD, IndexView
 from django.apps import apps
@@ -32,8 +32,8 @@ urlpatterns = [
     url(r'^$', IndexView.as_view()),
     path('admin/', admin.site.urls),
     url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
-    path(r'', include(socioscrud.get_urls())),
-    path(r'', include(filtroscrud.get_urls())),
+    re_path(r'', include(socioscrud.get_urls()), name='socios'),
+    re_path(r'', include(filtroscrud.get_urls()), name='filtros'),
 ]
 
 

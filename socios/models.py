@@ -27,30 +27,13 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-class Domicilio(BaseModel):
-    tipo = models.CharField(max_length=15, null=True, blank=False, choices=TIPO_DOMICILIO, default='FISCAL')
-    calle = models.CharField(max_length=50)
-    numero = models.CharField(max_length=6)
-    piso = models.CharField(max_length=3, verbose_name='Piso')
-    departamento = models.CharField(max_length=3, verbose_name='Dpto')
-    otro = models.CharField(max_length=50, verbose_name='Datos Adicionales')
-    barrio = models.CharField(max_length=50, verbose_name='Barrio')
-    ciudad = models.CharField(max_length=50, verbose_name='Ciudad/localidad')
-    partido = models.CharField(max_length=50)
-    provincia = models.CharField(max_length=50)
-    codigo_postal = models.CharField(max_length=50)
-
-
 class Personas(BaseModel):
     apellidos = models.CharField(max_length=50)
     nombres = models.CharField(max_length=50)
     tipo_documento = models.CharField(max_length=10)
     numero_documento = models.CharField(max_length=50)
-    fecha_nacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
-    domicilio_particular = models.OneToOneField(Domicilio, on_delete=models.CASCADE)
-    telefono = models.CharField(max_length=15, verbose_name='Telefono Celular')
-    telefono_aux = models.CharField(max_length=15, verbose_name='Telefono Alternativo')
-    email = models.CharField(max_length=60, verbose_name='Email')
+    fecha_nacimiento = models.DateField(verbose_name='Fecha de Nacimiento', null=True)
+    estado_civil = models.CharField(max_length=20, verbose_name='Estado Civil')
 
     class Meta:
         abstract = True
@@ -60,12 +43,68 @@ class Personas(BaseModel):
 class Socios(Personas):
     nro_socio = models.CharField(max_length=10, verbose_name='Numero de Socio')
     categoria = models.CharField(max_length=20, verbose_name='Categoria')
-    fecha_ingreso = models.DateField(verbose_name='Fecha de Ingreso')
-    comentarios = models.TextField()
+    fecha_ingreso = models.DateField(verbose_name='Fecha de Ingreso', null=True)
+    fecha_baja = models.DateField(verbose_name='Fecha de Baja', null=True)
+    ucp = models.CharField(max_length=10, verbose_name='Ultima cuota paga', null=True)
+    estado = models.CharField(max_length=20, verbose_name='Estado', default='')
+    activo = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Socio'
         verbose_name_plural = 'Socios'
+        ordering = ['fecha_ingreso']
+
+
+class Emails(BaseModel):
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Emails')
+    email = models.CharField(max_length=200)
+    chequeado = models.BooleanField(default=True)
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Email'
+        verbose_name_plural = 'Emails'
+
+class Telefonos(BaseModel):
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Telefonos')
+    telefono = models.CharField(max_length=20)
+    chequeado = models.BooleanField()
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Telefono'
+        verbose_name_plural = 'Telefonos'
+
+class Domicilios(BaseModel):
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Domicilios')
+    tipo = models.CharField(max_length=15, null=True, blank=False, choices=TIPO_DOMICILIO, default='PARTICULAR')
+    calle = models.CharField(max_length=50)
+    numero = models.CharField(max_length=6)
+    piso = models.CharField(max_length=10, verbose_name='Piso')
+    departamento = models.CharField(max_length=3, verbose_name='Dpto')
+    otro = models.CharField(max_length=50, verbose_name='Datos Adicionales')
+    barrio = models.CharField(max_length=50, verbose_name='Barrio')
+    ciudad = models.CharField(max_length=50, verbose_name='Ciudad/localidad')
+    partido = models.CharField(max_length=50)
+    provincia = models.CharField(max_length=50)
+    codigo_postal = models.CharField(max_length=50)
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Domicilio'
+        verbose_name_plural = 'Domicilios'
+
+class Comentarios(BaseModel):
+    socio = models.ForeignKey(Socios,on_delete=models.CASCADE, blank=True, related_name='Comentarios')
+    comentario = models.TextField(max_length=500,blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='Comentarios')
+
+    class Meta:
+        verbose_name = 'Comentario'
+        verbose_name_plural = 'Comentarios'
+
+    def __str__(self):
+        return self.comentario
 
 class Categorias(BaseModel):
     descripcion = models.CharField(max_length=20)

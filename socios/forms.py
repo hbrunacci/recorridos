@@ -11,17 +11,17 @@ from cruds_adminlte import (DatePickerWidget,
                             ColorPickerWidget,
                             CKEditorWidget)
 
-from .models import Domicilio, Socios, Filtro
+from .models import Domicilios, Socios, Filtro
 
 
-class DomicilioForm(forms.ModelForm):
+class DomiciliosForm(forms.ModelForm):
 
     class Meta:
-        model = Domicilio
+        model = Domicilios
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super(DomicilioForm, self).__init__(*args, **kwargs)
+        super(DomiciliosForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
@@ -72,7 +72,6 @@ class FiltrosForm(forms.ModelForm):
             Field('fecha_nacimiento_hasta', wrapper_class="col-md-4"),
             Field('fecha_socio_desde', wrapper_class="col-md-4"),
             Field('fecha_socio_hasta', wrapper_class="col-md-4"),
-            Field('fecha_nacimiento', wrapper_class="col-md-4"),
             Field('codigo_postal', wrapper_class="col-md-4"),
         )
 
@@ -89,10 +88,6 @@ class SociosForm(forms.ModelForm):
     class Meta:
         model = Socios
         fields = '__all__'
-        widgets = {
-
-            'comentarios': CKEditorWidget(attrs={'lang': 'es'}),
-        }
 
     def __init__(self, *args, **kwargs):
         super(SociosForm, self).__init__(*args, **kwargs)
@@ -109,10 +104,6 @@ class SociosForm(forms.ModelForm):
             Field('fecha_nacimiento ', wrapper_class="col-md-4"),
             Field('fecha_ingreso', wrapper_class="col-md-8"),
             Field('domicilio_particular ', wrapper_class="col-md-8"),
-            Field('telefono ', wrapper_class="col-md-4"),
-            Field('telefono_aux ', wrapper_class="col-md-4"),
-            Field('email', wrapper_class="col-md-6"),
-            Field('comentario',wrapper_class="col-md-12"),
         )
 
         self.helper.layout.append(

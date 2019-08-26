@@ -142,8 +142,8 @@ THUMBNAIL_PROCESSORS = (
 
 LOGIN_REDIRECT_URL = '/login'
 
-TIME_FORMAT= 'h:i A'
-DATETIME_FORMAT='m/d/Y H:i:s'
-DATE_FORMAT="m/d/Y"
+TIME_FORMAT = '%H:%M:%S'
+DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
+DATE_FORMAT = '%d-%m-%y'
 
 TIME_INPUT_FORMATS = ['%I:%M %p']
