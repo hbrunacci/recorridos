@@ -53,10 +53,10 @@ class FiltrosForm(forms.ModelForm):
         model = Filtro
         fields = '__all__'
         widgets = {
-            'fecha_nacimiento_desde': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
-            'fecha_nacimiento_hasta': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
-            'fecha_socio_desde': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
-            'fecha_socio_hasta': DatePickerWidget(attrs={'format': 'mm/dd/yyyy','icon': 'fa-calendar'}),
+            'fecha_nacimiento_desde': DatePickerWidget(attrs={'format': 'mm/dd/yyyy', 'icon': 'fa-calendar'}),
+            'fecha_nacimiento_hasta': DatePickerWidget(attrs={'format': 'mm/dd/yyyy', 'icon': 'fa-calendar'}),
+            'fecha_socio_desde': DatePickerWidget(attrs={'format': 'mm/dd/yyyy', 'icon': 'fa-calendar'}),
+            'fecha_socio_hasta': DatePickerWidget(attrs={'format': 'mm/dd/yyyy', 'icon': 'fa-calendar'}),
         }
 
     def __init__(self, *args, **kwargs):

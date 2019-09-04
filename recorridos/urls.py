@@ -25,23 +25,18 @@ from cruds_adminlte.urls import crud_for_app
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 
-socioscrud = SociosCRUD()
-filtroscrud = FiltroCRUD()
+sociosCRUD = SociosCRUD()
+filtrosCRUD = FiltroCRUD()
 
 urlpatterns = [
     url(r'^$', IndexView.as_view()),
     path('admin/', admin.site.urls),
     url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
-    re_path(r'', include(socioscrud.get_urls()), name='socios'),
-    re_path(r'', include(filtroscrud.get_urls()), name='filtros'),
+    re_path(r'', include(filtrosCRUD.get_urls())),
+    re_path(r'', include(sociosCRUD.get_urls())),
 ]
 
 
 urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
 
-print(socioscrud.get_urls())
-print(filtroscrud.get_urls())
 
-
-
-#urlpatterns += crud_for_model(apps.get_model('socios', 'Socios'))

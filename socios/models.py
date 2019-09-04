@@ -54,6 +54,9 @@ class Socios(Personas):
         verbose_name_plural = 'Socios'
         ordering = ['fecha_ingreso']
 
+    def __str__(self):
+        return self.nro_socio
+
 
 class Emails(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Emails')
@@ -95,9 +98,9 @@ class Domicilios(BaseModel):
         verbose_name_plural = 'Domicilios'
 
 class Comentarios(BaseModel):
-    socio = models.ForeignKey(Socios,on_delete=models.CASCADE, blank=True, related_name='Comentarios')
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Comentarios')
     comentario = models.TextField(max_length=500,blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='Comentarios')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='Comentarios')
 
     class Meta:
         verbose_name = 'Comentario'
@@ -105,6 +108,7 @@ class Comentarios(BaseModel):
 
     def __str__(self):
         return self.comentario
+
 
 class Categorias(BaseModel):
     descripcion = models.CharField(max_length=20)

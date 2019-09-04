@@ -12,7 +12,7 @@ def traer_datos_socios(archivo):
 
 def importar_domicilios(datos):
     x = 0
-    for campo in datos[1:10]:
+    for campo in datos[1:]:
         x += 1
         try:
             new_socio, created = Socios.objects.get_or_create(nro_socio=campo[0])
@@ -30,6 +30,8 @@ def importar_domicilios(datos):
                 new_object.chequeado = campo[12] #12 chequeado
                 new_object.activo = campo[14] #14 activo
                 new_object.save()
+                if x%5000 == 0:
+                    print(x)
         except:
             print(x)
             print(campo)
@@ -58,22 +60,17 @@ def importar_emails(datos):
 
 def importar_telefonos(datos):
     x = 0
-    for campo in datos[1:]:
+    data = []
+    for campo in datos[250000:]:
         x += 1
-        try:
-            print(x)
-            print(campo)
-            new_socio, created = Socios.objects.get_or_create(nro_socio=campo[0])
+        new_socio, created = Socios.objects.get_or_create(nro_socio=campo[0])
+        if created:
+            print(new_socio)
             new_socio.save()
-            new_telefono = Telefonos()
-            new_telefono.socio = new_socio
-            new_telefono.telefono = campo[1]
-            new_telefono.chequeado = campo[3]
-            new_telefono.activo = campo[4]
-            new_telefono.save()
-        except:
-            print('---------------- Error ---------------')
-            pass
+        data.append(Telefonos.create(socio=new_socio, telefono=campo[1], chequeado=campo[3], activo=campo[4]))
+        if x%5 == 0:
+            print(data)
+            Socios.objects.bulk_create(data)
 
 def importar_socios(socios):
     x = 0
