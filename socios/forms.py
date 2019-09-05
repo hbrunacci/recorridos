@@ -73,6 +73,9 @@ class FiltrosForm(forms.ModelForm):
             Field('fecha_socio_desde', wrapper_class="col-md-4"),
             Field('fecha_socio_hasta', wrapper_class="col-md-4"),
             Field('codigo_postal', wrapper_class="col-md-4"),
+            Field('ciudad', wrapper_class="col-md-4"),
+            Field('partido', wrapper_class="col-md-4"),
+            Field('provincia', wrapper_class="col-md-4"),
         )
 
         self.helper.layout.append(

@@ -126,6 +126,9 @@ class Filtro(BaseModel):
     fecha_socio_desde = models.DateField(null=True, blank=True)
     fecha_socio_hasta = models.DateField(null=True, blank=True)
     codigo_postal = models.CharField(max_length=20, null=True, blank=True)
+    ciudad = models.CharField(max_length=35, null=True,blank=True)
+    partido = models.CharField(max_length=35, null=True,blank=True)
+    provincia = models.CharField(max_length=35, null=True,blank=True)
 
     class Meta:
         verbose_name_plural = 'Filtros'

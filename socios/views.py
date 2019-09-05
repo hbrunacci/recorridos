@@ -74,7 +74,7 @@ class Comentarios_AjaxCRUD(InlineAjaxCRUD):
 
 
 class SociosFormFilter(forms.Form):
-    Direccion = forms.ModelMultipleChoiceField(queryset=Domicilios.objects.all())
+    Direccion = forms.ModelMultipleChoiceField(queryset=Domicilios.objects.all()[:10])
 
 
 class filterSocios(FormFilter):
@@ -89,7 +89,7 @@ class SociosCRUD(CRUDView):
               'fecha_nacimiento', 'domicilio_particular', 'telefono', 'telefono_aux', 'email', ]
     list_fields = ['apellidos','nombres']
     display_fields = ['apellidos','nombres']
-    list_filter = ['categoria', 'fecha_ingreso', 'fecha_nacimiento']
+    list_filter = ['categoria', 'fecha_ingreso', 'fecha_nacimiento', 'Domicilios_partido']
     views_available = ['list', 'update', 'detail',]
     search_fields = ['numero_documento']
     add_form = SociosForm
@@ -122,7 +122,15 @@ class SociosCRUD(CRUDView):
                     if filtro.fecha_nacimiento_hasta:
                         query.add(Q(fecha_nacimiento__lte=filtro.fecha_nacimiento_hasta), Q.AND)
                     if filtro.codigo_postal:
-                        query.add(Q(codigo_postal__contains=filtro.codigo_postal), Q.AND)
+                        query.add(Q(Domicilios__codigo_postal__contains=filtro.codigo_postal), Q.AND)
+                    if filtro.ciudad:
+                        query.add(Q(Domicilios__ciudad__contains=filtro.codigo_postal), Q.AND)
+                    if filtro.partido:
+                        query.add(Q(Domicilios__partido__contains=filtro.codigo_postal), Q.AND)
+                    if filtro.provincia:
+                        query.add(Q(Domicilios__provincia__contains=filtro.codigo_postal), Q.AND)
+
+
                     querys.add(query, Q.OR)
                 queryset = queryset.filter(querys)
                 return queryset
