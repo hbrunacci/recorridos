@@ -18,23 +18,7 @@
                     <i class="fa fa-pencil"></i> <span>{% trans "Filtros" %}</span>
                 </a>
             </li>
-            <li class="header">AUTH</li>
-            <li>
-                <a href="{% url 'auth_user_list' %}">
-                    <i class="fa fa-user"></i> <span>{% trans "Users" %}</span>
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'auth_group_list' %}">
-                    <i class="fa fa-users"></i> <span>{% trans "Groups" %}</span>
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'auth_permission_list' %}">
-                    <i class="fa fa-id-card-o"></i> <span>{% trans "Permissions" %}</span>
-                </a>
-            </li>
-            {% endblock nav_links %}
+          {% endblock nav_links %}
             {% endblock nav_links_outer %}
         </ul>
         {% endblock nav_links_ul %}
