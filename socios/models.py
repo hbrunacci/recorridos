@@ -120,7 +120,7 @@ class Filtro(BaseModel):
     nombre_filtro = models.CharField(max_length=50)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     grupo = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
-    categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE, blank=True)
+    categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE, blank=True, null=True)
     fecha_nacimiento_desde = models.DateField(null=True, blank=True)
     fecha_nacimiento_hasta = models.DateField(null=True, blank=True)
     fecha_socio_desde = models.DateField(null=True, blank=True)
