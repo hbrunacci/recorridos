@@ -100,20 +100,18 @@ class SociosForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field('nro_socio', wrapper_class="col-md-3"),
             Field('apellidos', wrapper_class="col-md-5"),
-            Field('nombres ', wrapper_class="col-md-4"),
-            Field('tipo_documento ', wrapper_class="col-md-4"),
-            Field('numero_documento ', wrapper_class="col-md-4"),
+            Field('nombres', wrapper_class="col-md-4"),
+            Field('tipo_documento', wrapper_class="col-md-4"),
+            Field('numero_documento', wrapper_class="col-md-4"),
             Field('categoria', wrapper_class="col-md-4"),
-            Field('fecha_nacimiento ', wrapper_class="col-md-4"),
+            Field('fecha_nacimiento', wrapper_class="col-md-4"),
             Field('fecha_ingreso', wrapper_class="col-md-8"),
-            Field('domicilio_particular ', wrapper_class="col-md-8"),
         )
 
         self.helper.layout.append(
             FormActions(
-                Submit('submit', _('Submit'), css_class='btn btn-primary'),
                 HTML("""{% load i18n %}<a class="btn btn-danger"
-                        href="{{ url_delete }}">{% trans 'Delete' %}</a>"""),
+                        href="{{ url_list }}">{% trans 'Volver' %}</a>"""),
             )
         )
 

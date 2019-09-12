@@ -67,6 +67,7 @@ class Emails(BaseModel):
     class Meta:
         verbose_name = 'Email'
         verbose_name_plural = 'Emails'
+        ordering = ['chequeado']
 
 class Telefonos(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Telefonos')
@@ -77,6 +78,7 @@ class Telefonos(BaseModel):
     class Meta:
         verbose_name = 'Telefono'
         verbose_name_plural = 'Telefonos'
+        ordering = ['chequeado']
 
 class Domicilios(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Domicilios')
@@ -92,6 +94,7 @@ class Domicilios(BaseModel):
     provincia = models.CharField(max_length=50)
     codigo_postal = models.CharField(max_length=50)
     activo = models.BooleanField(default=True)
+    ordering = ['calle']
 
     class Meta:
         verbose_name = 'Domicilio'

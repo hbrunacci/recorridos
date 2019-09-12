@@ -44,6 +44,7 @@ class Direccion_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['calle', 'numero', 'piso', 'barrio', 'partido', 'provincia', 'codigo_postal']
     title = _("Domicilios")
+    views_available = ['list',]
 
 
 class Emails_AjaxCRUD(InlineAjaxCRUD):
@@ -52,6 +53,7 @@ class Emails_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['email', 'chequeado']
     title = _("Emails")
+    views_available = ['list',]
 
 
 class Telefono_AjaxCRUD(InlineAjaxCRUD):
@@ -61,6 +63,7 @@ class Telefono_AjaxCRUD(InlineAjaxCRUD):
     list_fields = ['telefono','chequeado']
     title = _("Telefonos")
     list_fields = ['telefono','chequeado']
+    views_available = ['list',]
 
 
 class Comentarios_AjaxCRUD(InlineAjaxCRUD):
@@ -69,6 +72,7 @@ class Comentarios_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['comentario']
     title = _("Comentarios")
+    views_available = ['list', 'create']
 
 
 
@@ -96,6 +100,7 @@ class SociosCRUD(CRUDView):
     update_form = SociosForm
     split_space_search = True
     paginate_by = 50
+    template_name_base = 'scruds'
     paginate_position = 'Bottom'  # Both | Bottom
     paginate_template = 'cruds/pagination/enumeration.html'
     inlines = [Direccion_AjaxCRUD, Telefono_AjaxCRUD, Emails_AjaxCRUD, Comentarios_AjaxCRUD,]
