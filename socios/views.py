@@ -113,7 +113,7 @@ class SociosCRUD(CRUDView):
                 queryset = queryset.filter(activo=True)
                 user = self.request.user
                 filtros = Filtro.objects.all().filter(usuario=user)
-                querys=Q()
+                querys=Q(activo=True)
                 for filtro in filtros:
                     query = Q()
                     if filtro.categoria:
