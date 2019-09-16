@@ -110,9 +110,10 @@ class SociosCRUD(CRUDView):
 
         class ListViewClass(TempListViewClass):
             def get_userfilter(self, queryset):
-                queryset = queryset.filter(activo=True)
+                queryset = queryset.filter(activo=True).exclude(apellidos__isnull=True).exclude(apellidos__exact='')
                 user = self.request.user
                 filtros = Filtro.objects.all().filter(usuario=user)
+
                 querys=Q(activo=True)
                 for filtro in filtros:
                     query = Q()
@@ -129,11 +130,11 @@ class SociosCRUD(CRUDView):
                     if filtro.codigo_postal:
                         query.add(Q(Domicilios__codigo_postal__contains=filtro.codigo_postal), Q.AND)
                     if filtro.ciudad:
-                        query.add(Q(Domicilios__ciudad__contains=filtro.codigo_postal), Q.AND)
+                        query.add(Q(Domicilios__ciudad__contains=filtro.ciudad), Q.AND)
                     if filtro.partido:
-                        query.add(Q(Domicilios__partido__contains=filtro.codigo_postal), Q.AND)
+                        query.add(Q(Domicilios__partido__contains=filtro.partido), Q.AND)
                     if filtro.provincia:
-                        query.add(Q(Domicilios__provincia__contains=filtro.codigo_postal), Q.AND)
+                        query.add(Q(Domicilios__provincia__contains=filtro.provincia), Q.AND)
 
 
                     querys.add(query, Q.OR)
