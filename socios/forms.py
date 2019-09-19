@@ -11,7 +11,7 @@ from cruds_adminlte import (DatePickerWidget,
                             ColorPickerWidget,
                             CKEditorWidget)
 
-from .models import Domicilios, Socios, Filtro
+from .models import Comentarios, Domicilios, Socios, Filtro
 
 
 class DomiciliosForm(forms.ModelForm):
@@ -85,6 +85,30 @@ class FiltrosForm(forms.ModelForm):
                         href="{{ url_delete }}">{% trans 'Delete' %}</a>"""),
             )
         )
+
+class ComentarioForm(forms.ModelForm):
+
+    class Meta:
+        model = Comentarios
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(ComentarioForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Field('comentario', wrapper_class="col-md-12"),
+        )
+
+        self.helper.layout.append(
+            FormActions(
+                HTML("""{% load i18n %}<a class="btn btn-danger"
+                        href="{{ url_list }}">{% trans 'Volver' %}</a>"""),
+            )
+        )
+
+
 
 class SociosForm(forms.ModelForm):
 

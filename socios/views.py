@@ -12,7 +12,7 @@ from .models import Socios, Filtro, Comentarios, Domicilios, Emails, Telefonos
 from django.views.generic.base import TemplateView
 from django.db.models import Q
 from django import forms
-from .forms import SociosForm, FiltrosForm, DomiciliosForm
+from .forms import ComentarioForm, SociosForm, FiltrosForm, DomiciliosForm
 
 
 class IndexView(TemplateView):
@@ -44,7 +44,7 @@ class Direccion_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['calle', 'numero', 'piso', 'barrio', 'partido', 'provincia', 'codigo_postal']
     title = _("Domicilios")
-    views_available = ['list',]
+    views_available = ['list','create']
 
 
 class Emails_AjaxCRUD(InlineAjaxCRUD):
@@ -53,7 +53,7 @@ class Emails_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['email', 'chequeado']
     title = _("Emails")
-    views_available = ['list',]
+    views_available = ['list','create']
 
 
 class Telefono_AjaxCRUD(InlineAjaxCRUD):
@@ -72,6 +72,7 @@ class Comentarios_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['comentario']
     title = _("Comentarios")
+    add_form = ComentarioForm
     views_available = ['list', 'create']
 
 
