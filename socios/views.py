@@ -44,7 +44,7 @@ class Direccion_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['calle', 'numero', 'piso', 'barrio', 'partido', 'provincia', 'codigo_postal']
     title = _("Domicilios")
-    views_available = ['list','create']
+    views_available = ['list', ]
 
 
 class Emails_AjaxCRUD(InlineAjaxCRUD):
@@ -53,17 +53,16 @@ class Emails_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'socio'
     list_fields = ['email', 'chequeado']
     title = _("Emails")
-    views_available = ['list','create']
+    views_available = ['list', ]
 
 
 class Telefono_AjaxCRUD(InlineAjaxCRUD):
     model = Telefonos
     base_model = Socios
     inline_field = 'socio'
-    list_fields = ['telefono','chequeado']
+    list_fields = ['telefono', 'chequeado']
     title = _("Telefonos")
-    list_fields = ['telefono','chequeado']
-    views_available = ['list',]
+    views_available = ['list', ]
 
 
 class Comentarios_AjaxCRUD(InlineAjaxCRUD):
@@ -73,9 +72,7 @@ class Comentarios_AjaxCRUD(InlineAjaxCRUD):
     list_fields = ['comentario']
     title = _("Comentarios")
     add_form = ComentarioForm
-    views_available = ['list', 'create']
-
-
+    update_form = ComentarioForm
 
 
 class SociosFormFilter(forms.Form):

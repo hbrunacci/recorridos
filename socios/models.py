@@ -99,19 +99,24 @@ class Domicilios(BaseModel):
     class Meta:
         verbose_name = 'Domicilio'
         verbose_name_plural = 'Domicilios'
+        ordering = ['codigo_postal', 'calle']
 
 class Comentarios(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Comentarios')
     comentario = models.TextField(max_length=500,blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='Comentarios')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='Comentarios')
 
     class Meta:
         verbose_name = 'Comentario'
         verbose_name_plural = 'Comentarios'
+        ordering = ['pk']
 
     def __str__(self):
         return self.comentario
 
+    def save(self, *args, **kwargs):
+        super(Comentarios, self).save(*args, **kwargs)
+    
 
 class Categorias(BaseModel):
     descripcion = models.CharField(max_length=20)

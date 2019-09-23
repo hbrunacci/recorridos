@@ -78,13 +78,6 @@ class FiltrosForm(forms.ModelForm):
             Field('provincia', wrapper_class="col-md-4"),
         )
 
-        self.helper.layout.append(
-            FormActions(
-                Submit('submit', _('Submit'), css_class='btn btn-primary'),
-                HTML("""{% load i18n %}<a class="btn btn-danger"
-                        href="{{ url_delete }}">{% trans 'Delete' %}</a>"""),
-            )
-        )
 
 class ComentarioForm(forms.ModelForm):
 
@@ -103,8 +96,9 @@ class ComentarioForm(forms.ModelForm):
 
         self.helper.layout.append(
             FormActions(
+                Submit('submit', _('Submit'), css_class='btn btn-primary'),
                 HTML("""{% load i18n %}<a class="btn btn-danger"
-                        href="{{ url_list }}">{% trans 'Volver' %}</a>"""),
+                        href="{{ url_delete }}">{% trans 'Delete' %}</a>"""),
             )
         )
 
