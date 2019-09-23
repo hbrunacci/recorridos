@@ -59,7 +59,7 @@ class Socios(Personas):
 
 
 class Emails(BaseModel):
-    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Emails')
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='emails')
     email = models.CharField(max_length=200)
     chequeado = models.BooleanField(default=True)
     activo = models.BooleanField(default=True)
@@ -70,7 +70,7 @@ class Emails(BaseModel):
         ordering = ['chequeado']
 
 class Telefonos(BaseModel):
-    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Telefonos')
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='telefonos')
     telefono = models.CharField(max_length=20)
     chequeado = models.BooleanField()
     activo = models.BooleanField(default=True)
@@ -81,7 +81,7 @@ class Telefonos(BaseModel):
         ordering = ['chequeado']
 
 class Domicilios(BaseModel):
-    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Domicilios')
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='domicilios')
     tipo = models.CharField(max_length=15, null=True, blank=False, choices=TIPO_DOMICILIO, default='PARTICULAR')
     calle = models.CharField(max_length=50)
     numero = models.CharField(max_length=6)
@@ -101,10 +101,17 @@ class Domicilios(BaseModel):
         verbose_name_plural = 'Domicilios'
         ordering = ['codigo_postal', 'calle']
 
+    def __str__(self):
+        return self.id
+
+    def __unicode__(self):
+        return self.calle
+
+
 class Comentarios(BaseModel):
-    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='Comentarios')
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='comentarios')
     comentario = models.TextField(max_length=500,blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='Comentarios')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='comentarios')
 
     class Meta:
         verbose_name = 'Comentario'
@@ -116,7 +123,7 @@ class Comentarios(BaseModel):
 
     def save(self, *args, **kwargs):
         super(Comentarios, self).save(*args, **kwargs)
-    
+
 
 class Categorias(BaseModel):
     descripcion = models.CharField(max_length=20)
