@@ -111,6 +111,8 @@ class Domicilios(BaseModel):
 class Comentarios(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='comentarios')
     comentario = models.TextField(max_length=500,blank=True, null=True)
+    nosocio = models.BooleanField(default=False, blank=True, null=True, verbose_name='No es mas socio')
+    fallecido = models.BooleanField(default=False, blank=True, null=True, verbose_name='El socio fallecio')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='comentarios')
 
     class Meta:

@@ -92,6 +92,8 @@ class ComentarioForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Field('comentario', wrapper_class="col-md-12"),
+            Field('nosocio', wrapper_class='col-ms-3'),
+            Field('fallecido', wrapper_class='col-ms-3'),
         )
 
         self.helper.layout.append(

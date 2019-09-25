@@ -72,7 +72,7 @@ class Comentarios_AjaxCRUD(InlineAjaxCRUD):
     model = Comentarios
     base_model = Socios
     inline_field = 'socio'
-    list_fields = ['comentario']
+    list_fields = ['comentario', 'fallecido', 'nosocio']
     title = _("Comentarios")
     add_form = ComentarioForm
     update_form = ComentarioForm
