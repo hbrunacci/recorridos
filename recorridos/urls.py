@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,re_path
 from django.conf.urls import url, include
-from socios.views import SociosCRUD, FiltroCRUD, IndexView
+from socios.views import SociosCRUD, FiltroCRUD, IndexView, DomiciliosCRUD
 from django.apps import apps
 from cruds_adminlte.urls import crud_for_model
 
@@ -27,6 +27,7 @@ from django.conf.urls.static import static
 
 sociosCRUD = SociosCRUD()
 filtrosCRUD = FiltroCRUD()
+domiciliosCRUD = DomiciliosCRUD()
 
 urlpatterns = [
     url(r'^$', IndexView.as_view()),
@@ -35,6 +36,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView.as_view(), {'next_page': '/'}),
     re_path(r'', include(filtrosCRUD.get_urls())),
     re_path(r'', include(sociosCRUD.get_urls())),
+    re_path(r'', include(domiciliosCRUD.get_urls())),
 ]
 
 

@@ -57,6 +57,33 @@ class Socios(Personas):
     def __str__(self):
         return self.nro_socio
 
+    def get_all_fields(self):
+        """Returns a list of all field names on the instance."""
+        fields = []
+        for f in self._meta.fields:
+
+            fname = f.name
+            # resolve picklists/choices, with get_xyz_display() function
+            get_choice = 'get_' + fname + '_display'
+            if hasattr(self, get_choice):
+                value = getattr(self, get_choice)()
+            else:
+                try:
+                    value = getattr(self, fname)
+                except AttributeError:
+                    value = None
+
+            # only display fields with values and skip some fields entirely
+            if f.editable and value and f.name not in ('id', 'status', 'workshop', 'user', 'complete'):
+                fields.append(
+                    {
+                        'label': f.verbose_name,
+                        'name': f.name,
+                        'value': value,
+                    }
+                )
+        return fields
+
 
 class Emails(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='emails')
@@ -81,7 +108,7 @@ class Telefonos(BaseModel):
         ordering = ['chequeado']
 
 class Domicilios(BaseModel):
-    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='domicilios')
+    socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='domicilio')
     tipo = models.CharField(max_length=15, null=True, blank=False, choices=TIPO_DOMICILIO, default='PARTICULAR')
     calle = models.CharField(max_length=50)
     numero = models.CharField(max_length=6)
@@ -94,12 +121,11 @@ class Domicilios(BaseModel):
     provincia = models.CharField(max_length=50)
     codigo_postal = models.CharField(max_length=50)
     activo = models.BooleanField(default=True)
-    ordering = ['calle']
 
     class Meta:
         verbose_name = 'Domicilio'
         verbose_name_plural = 'Domicilios'
-        ordering = ['codigo_postal', 'calle']
+        ordering = ['codigo_postal', '-calle']
 
     def __str__(self):
         return self.id

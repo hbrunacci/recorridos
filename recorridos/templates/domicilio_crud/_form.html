@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load crud_tags %}
+
+{% if not form.helper %}
+    {{ form.media }}
+{% endif %}
+
+<form action="{% if action == 'create'%}{{url_create}}{%else%}{{url_update}}{% endif %}{{getparams}}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="box-body row">
+
+        <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <th>{% trans 'Label' %}</th><th>{% trans 'Value' %}</th>
+                            </thead>
+                            <tbody>
+                                {% crud_fields form.instance.socio "apellidos,nro_socio,numero_documento,fecha_nacimiento,categoria"%}
+                            </tbody>
+                            <ybody>
+                                {% crud_fields object "calle,barrio,ciudad,partido,provincia,codigo_postal"%}
+                            </ybody>
+
+
+                        </table>
+                    </div>
+        </div>
+
+    </div>
+
+
+    {% if not form.helper %}
+    <div class="box-footer">
+        <div class="form-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
+                {% if url_delete %}
+                    <a href="{{ url_delete }}" class="btn btn-danger">{% trans "Delete" %}</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</form>

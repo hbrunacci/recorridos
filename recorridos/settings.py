@@ -62,7 +62,7 @@ ROOT_URLCONF = 'recorridos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,7 +93,7 @@ DATABASES = {
             'NAME': 'recorridos',
             'USER': 'user_recorridos',
             'PASSWORD': 'PrimeroRiver',
-            'HOST': 'localhost',
+            'HOST': '68.183.196.142',
             'PORT': '',
         }
 }

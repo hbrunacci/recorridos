@@ -28,7 +28,7 @@
     {% endfor %}
     {% if page_obj.number < paginator.page_range.stop|add:"-10"  %}
         <li class="paginate_button active">
-            <a href="{{getparams}}page={{ page_obj.number|add:"10" }}"> +10 </a>
+            <a href="{{getparams}}page={{ page_obj.number|add:"5" }}"> +10 </a>
         </li>
     {% endif %}
         <li class="paginate_button active">

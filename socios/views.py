@@ -2,17 +2,17 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import User
 
-from cruds_adminlte.crud import CRUDView
+from cruds_adminlte.crud import CRUDView,get_filters
 from cruds_adminlte.inline_crud import InlineAjaxCRUD
 from django.utils.translation import ugettext_lazy as _
 from cruds_adminlte.filter import FormFilter
 
-from .models import Socios, Filtro, Comentarios, Domicilios, Emails, Telefonos
+from .models import Categorias, Socios, Filtro, Comentarios, Domicilios, Emails, Telefonos
 
 from django.views.generic.base import TemplateView
 from django.db.models import Q
 from django import forms
-from .forms import ComentarioForm, SociosForm, FiltrosForm, DomiciliosForm
+from .forms import ComentarioForm, SociosForm, FiltrosForm, DomiciliosForm, FiltrosWebForm
 
 from django.http.response import HttpResponse
 from cruds_adminlte.templatetags.crud_tags import crud_inline_url
@@ -67,12 +67,17 @@ class Telefono_AjaxCRUD(InlineAjaxCRUD):
     title = _("Telefonos")
     views_available = ['list', ]
 
+#nombre, localidad, nro_socio_categoria_Codigo_postal
+
+
+# Categoria, Filtros prellenados
+
 
 class Comentarios_AjaxCRUD(InlineAjaxCRUD):
     model = Comentarios
     base_model = Socios
     inline_field = 'socio'
-    list_fields = ['comentario', 'fallecido', 'nosocio']
+    list_fields = ['comentario', 'fallecido']
     title = _("Comentarios")
     add_form = ComentarioForm
     update_form = ComentarioForm
@@ -91,17 +96,90 @@ class Comentarios_AjaxCRUD(InlineAjaxCRUD):
                     self.object.save()
                     crud_inline_url(self.model_id,
                                     self.object, 'list', self.namespace)
-
                     return HttpResponse(""" """)
             return CreateView
 
 
 class SociosFormFilter(forms.Form):
-    Direccion = forms.ModelMultipleChoiceField(queryset=Domicilios.objects.all()[:10])
+    queryset = Categorias.objects.all().values('descripcion')
+    socio__categoria = forms.ModelMultipleChoiceField(queryset=queryset)
+    fecha_nacimiento_desde = forms.DateField()
+    fecha_nacimiento_hasta= forms.DateField()
+    fecha_ingreso_desde = forms.DateField()
+    fecha_ingreso_hasta = forms.DateField()
 
 
 class filterSocios(FormFilter):
-    form = SociosFormFilter
+    form = FiltrosWebForm
+
+
+class DomiciliosCRUD(CRUDView):
+    model = Domicilios
+    related_fields = ['socio']
+    list_fields = ['calle', 'ciudad', 'partido', 'codigo_postal', 'socio__apellidos', 'socio__categoria', 'socio__nro_socio']
+    update_form = DomiciliosForm
+    add_form = DomiciliosForm
+    paginate_by = 50
+    paginate_position = 'Bottom'  # Both | Bottom
+    paginate_template = 'cruds/pagination/enumeration.html'
+    inlines = [Comentarios_AjaxCRUD, Telefono_AjaxCRUD,]
+    views_available = ['list', 'update', 'detail', ]
+    split_space_search = False
+    list_filter = ['calle', filterSocios]
+    search_fields = ['socio__numero_documento', 'calle', 'ciudad','codigo_postal','socio__categoria']
+    template_name_base = 'domicilio_crud'
+
+
+    def get_list_view(self):
+        TempListViewClass = super(DomiciliosCRUD, self).get_list_view()
+
+        class ListViewClass(TempListViewClass):
+            text_fields = ['calle', 'socio__categoria']
+
+            def get_listfilter_queryset(self, queryset):
+                if self.list_filter:
+                    filters = get_filters(
+                        self.model, self.list_filter, self.request)
+                    for filter in filters:
+                        filter_q = get_custom_filter(filter)
+                        queryset = queryset.filter(filter_q)
+                return queryset
+
+            def search_queryset(self, query):
+                if self.split_space_search is True:
+                    self.split_space_search = ' '
+
+                if self.search_fields and 'q' in self.request.GET:
+                    q = self.request.GET.get('q')
+                    if self.split_space_search:
+                        q = q.split(self.split_space_search)
+                    elif q:
+                        q = [q]
+                    sfilter = None
+                    for field in self.search_fields:
+                        for qsearch in q:
+                            if field not in self.context_rel:
+                                field = '%s__icontains' % field if field in self.text_fields else field
+                                if sfilter is None:
+                                    sfilter = Q(**{field: qsearch})
+                                else:
+                                    sfilter |= Q(**{field: qsearch})
+                    if sfilter is not None:
+                        query = query.filter(sfilter)
+
+                if self.related_fields:
+                    query = query.filter(**self.context_rel)
+                return query
+
+            def get_queryset(self):
+                queryset = super(ListViewClass, self).get_queryset()
+                queryset = get_user_queryset(self.request.user, queryset)
+                queryset = self.search_queryset(queryset)
+                queryset = self.get_listfilter_queryset(queryset)
+                queryset = queryset.order_by('codigo_postal', 'ciudad', 'calle')
+                return queryset
+
+        return ListViewClass
 
 
 class SociosCRUD(CRUDView):
@@ -111,68 +189,89 @@ class SociosCRUD(CRUDView):
     #fields = ['nro_socio', 'categoria', 'fecha_ingreso', 'apellidos', 'nombres', 'tipo_documento', 'numero_documento',
     #          'fecha_nacimiento', 'domicilio_particular', 'telefono', 'telefono_aux', 'email', ]
     fields = '__all__'
-    related_fields = ['domicilios']
-    list_fields = ['apellidos', 'nombres', 'categoria', 'domicilios']
-    display_fields = ['apellidos', 'nombres', 'categoria', 'domicilios']
+    related_fields = ['codigo_postal']
+    list_fields = ['apellidos', 'nombres', 'categoria', 'domicilio__codigo_postal']
+    display_fields = ['apellidos', 'nombres', 'categoria', 'domicilio']
     list_filter = ['categoria', 'fecha_ingreso', 'fecha_nacimiento', ]
     views_available = ['list', 'update', 'detail', ]
     search_fields = ['numero_documento', ]
+    split_space_search = True
     add_form = SociosForm
     update_form = SociosForm
-    split_space_search = True
     paginate_by = 50
     paginate_position = 'Bottom'  # Both | Bottom
     paginate_template = 'cruds/pagination/enumeration.html'
-    inlines = [Direccion_AjaxCRUD, Telefono_AjaxCRUD, Emails_AjaxCRUD, Comentarios_AjaxCRUD,]
+    inlines = [Direccion_AjaxCRUD, Telefono_AjaxCRUD, Comentarios_AjaxCRUD, ]
 
-    def get_list_view(self):
-        TempListViewClass = super(SociosCRUD, self).get_list_view()
 
-        class ListViewClass(TempListViewClass):
-            def get_userfilter(self, queryset):
-                queryset = queryset.filter(activo=True).exclude(apellidos__isnull=True).exclude(apellidos__exact='')
-                user = self.request.user
-                queryset = queryset.filter(built_userfilter(user))
-                return queryset
-
-            def get_queryset(self):
-                queryset = super(ListViewClass, self).get_queryset()
-                queryset = self.get_userfilter(queryset)
-                queryset = self.search_queryset(queryset)
-                queryset = self.get_listfilter_queryset(queryset)
-                return queryset
-
-        return ListViewClass
+def get_user_queryset(user, queryset):
+    queryset = queryset.filter(socio__activo=True) \
+        .exclude(socio__apellidos__isnull=True) \
+        .exclude(socio__apellidos__exact='')
+    user = user
+    queryset = queryset.filter(built_userfilter(user))
+    return queryset
 
 
 def built_userfilter(user):
     filtros = Filtro.objects.all().filter(usuario=user)
-
-    querys = Q(activo=True)
+    querys = Q()
     for filtro in filtros:
         query = Q()
         if filtro.categoria:
-            query.add(Q(categoria__contains=filtro.categoria), Q.AND)
+            query.add(Q(socio__categoria__icontains=filtro.categoria), Q.AND)
         if filtro.fecha_socio_desde:
-            query.add(Q(fecha_ingreso__gte=filtro.fecha_socio_desde), Q.AND)
+            query.add(Q(socio__fecha_ingreso__gte=filtro.fecha_socio_desde), Q.AND)
         if filtro.fecha_socio_hasta:
-            query.add(Q(fecha_ingreso__lte=filtro.fecha_socio_hasta), Q.AND)
+            query.add(Q(socio__fecha_ingreso__lte=filtro.fecha_socio_hasta), Q.AND)
         if filtro.fecha_nacimiento_desde:
-            query.add(Q(fecha_nacimiento__gte=filtro.fecha_nacimiento_desde), Q.AND)
+            query.add(Q(socio__fecha_nacimiento__gte=filtro.fecha_nacimiento_desde), Q.AND)
         if filtro.fecha_nacimiento_hasta:
-            query.add(Q(fecha_nacimiento__lte=filtro.fecha_nacimiento_hasta), Q.AND)
+            query.add(Q(socio__fecha_nacimiento__lte=filtro.fecha_nacimiento_hasta), Q.AND)
         if filtro.codigo_postal:
-            query.add(Q(Domicilios__codigo_postal__contains=filtro.codigo_postal), Q.AND)
+            query.add(Q(codigo_postal__icontains=filtro.codigo_postal), Q.AND)
         if filtro.ciudad:
-            query.add(Q(Domicilios__ciudad__contains=filtro.ciudad), Q.AND)
+            query.add(Q(ciudad__icontains=filtro.ciudad), Q.AND)
         if filtro.partido:
-            query.add(Q(Domicilios__partido__contains=filtro.partido), Q.AND)
+            query.add(Q(partido__icontains=filtro.partido), Q.AND)
         if filtro.provincia:
-            query.add(Q(Domicilios__provincia__contains=filtro.provincia), Q.AND)
+            query.add(Q(provincia__icontains=filtro.provincia), Q.AND)
 
         querys.add(query, Q.OR)
 
+    querys.add(Q(activo=True), Q.AND)
     return querys
+
+def get_custom_filter(filters):
+    query = Q()
+    for field, value in filters.form_instance.data.items():
+        if not value == '':
+            print(field)
+            print(value)
+            if field == 'calle':
+                query.add(Q(socio__categoria__icontains=value), Q.AND)
+            if field == 'categoria':
+                query.add(Q(socio__categoria__icontains=Categorias.objects.filter(pk=value).first()), Q.AND)
+            if field == 'fecha_socio_desde':
+                query.add(Q(socio__fecha_ingreso__gte=value), Q.AND)
+            if field == 'fecha_socio_hasta':
+                query.add(Q(socio__fecha_ingreso__lte=value), Q.AND)
+            if field == 'fecha_nacimiento_desde':
+                query.add(Q(socio__fecha_nacimiento__gte=value), Q.AND)
+            if field == 'fecha_nacimiento_hasta':
+                query.add(Q(socio__fecha_nacimiento__lte=value), Q.AND)
+            if field == 'codigo_postal':
+                query.add(Q(codigo_postal__icontains=value), Q.AND)
+            if field == 'ciudad':
+                query.add(Q(ciudad__icontains=value), Q.AND)
+            if field == 'partido':
+                query.add(Q(partido__icontains=value), Q.AND)
+            if field == 'provincia':
+                query.add(Q(provincia__icontains=value), Q.AND)
+    query.add(Q(activo=True), Q.AND)
+    return query
+
+
 
 
 
