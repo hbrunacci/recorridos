@@ -8,16 +8,36 @@
             {% block nav_links_outer %}
             <li class="header">{% block nav_heading %}Menu Principal{% endblock %}</li>
             {% block nav_links %}
+                {% if user %}
+                    {% if user.has_perm.socios.view_domicilios %}
             <li>
                 <a href="{% url 'socios_domicilios_list' %}">
                     <i class="fa fa-pencil"></i> <span>{% trans "Socios" %}</span>
                 </a>
             </li>
-                <li>
+                    {% endif %}
+                {% if perms.socios.view_filtro %}
+            <li>
                 <a href="{% url 'socios_filtro_list' %}">
                     <i class="fa fa-pencil"></i> <span>{% trans "Filtros" %}</span>
                 </a>
             </li>
+                {% endif %}
+                {% if perms.entradas.view_pedido %}
+            <li>
+                <a href="{% url 'entradas_pedido_list' %}">
+                    <i class="fa fa-pencil"></i> <span>{% trans "Pedidos" %}</span>
+                </a>
+            </li>
+                {% endif %}
+                {% if perms.entradas.view_evento %}
+            <li>
+                <a href="{% url 'entradas_evento_list' %}">
+                    <i class="fa fa-pencil"></i> <span>{% trans "Eventos" %}</span>
+                </a>
+            </li>
+                {% endif %}
+                {% endif %}
           {% endblock nav_links %}
             {% endblock nav_links_outer %}
         </ul>
