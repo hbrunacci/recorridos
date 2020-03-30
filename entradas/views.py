@@ -127,7 +127,7 @@ class PedidoCRUD(CRUDView):
             def get_queryset(self):
                 usuario = self.request.user
                 queryset = super(ListViewClass, self).get_queryset()
-                if not usuario.is_staff:
+                if not (usuario.is_staff or usuario.groups.filter(name__in=['Admin Reservas']).exists()):
                     queryset = queryset.filter(user_id=usuario.id)
                 for item in queryset:
                     result = item.update_quantities_amounts()
@@ -151,3 +151,5 @@ class EntradaCRUD(CRUDView):
     inlines = []
     views_available =['create','list', 'update','delete' ]
 
+class ReportePedidosPDF(TemplateView):
+    template_name = 'reportes/'
