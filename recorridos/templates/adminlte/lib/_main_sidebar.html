@@ -8,7 +8,7 @@
             {% block nav_links_outer %}
             <li class="header">{% block nav_heading %}Menu Principal{% endblock %}</li>
             {% block nav_links %}
-                {% if user %}
+                {% if user.is_authenticated %}
                     {% if user.has_perm.socios.view_domicilios %}
             <li>
                 <a href="{% url 'socios_domicilios_list' %}">
@@ -37,6 +37,13 @@
                 </a>
             </li>
                 {% endif %}
+                    {% else %}
+            <li>
+                <a href="{% url 'login' %}">
+                    <i class="fa fa-pencil"></i> <span>{% trans "Login" %}</span>
+                </a>
+            </li>
+
                 {% endif %}
           {% endblock nav_links %}
             {% endblock nav_links_outer %}

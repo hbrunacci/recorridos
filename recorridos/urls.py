@@ -24,15 +24,15 @@ pedidoCRUD = PedidoCRUD()
 
 urlpatterns = [
     url(r'^$', IndexView.as_view()),
-    path('admin/', admin.site.urls),
-    url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), {'next_page': '/'}),
+    url(r'^login/$', IndexView.as_view()),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
     re_path(r'', include(filtrosCRUD.get_urls())),
     re_path(r'', include(sociosCRUD.get_urls())),
     re_path(r'', include(domiciliosCRUD.get_urls())),
     re_path(r'', include(eventoCRUD.get_urls())),
     re_path(r'', include(pedidoCRUD.get_urls())),
-
+    path('admin/', admin.site.urls),
 ]
 
 
