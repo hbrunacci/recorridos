@@ -1,23 +1,27 @@
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User
 
-from cruds_adminlte.crud import CRUDView, get_filters
+from cruds_adminlte.crud import CRUDView
 from cruds_adminlte.inline_crud import InlineAjaxCRUD
 from django.utils.translation import ugettext_lazy as _
-from cruds_adminlte.filter import FormFilter
 
 from .models import Evento, Entrada, Tarifa, LimiteReserva, Pedido
 import datetime
 
 from django.views.generic.base import TemplateView
-from django.db.models import Q
-from django import forms
 
 from .forms import EventoForm, EntradaForm, TarifaForm, LimiteReservaForm, PedidoForm
 
 from django.http.response import HttpResponse
-from cruds_adminlte.templatetags.crud_tags import crud_inline_url
+
+
+from django.template.loader import render_to_string
+from weasyprint import HTML,CSS
+import tempfile
+
+
+
+
 
 
 
@@ -48,6 +52,7 @@ class EventoCRUD(CRUDView):
     paginate_template = 'cruds/pagination/enumeration.html'
     inlines = [Tarifas_Ajax, Limites_Reserva_Ajax]
     views_available = ['create', 'list', 'update', 'delete']
+    template_name_base = 'eventos'
 
 
 class TarifaCRUD(CRUDView):
@@ -142,14 +147,42 @@ class PedidoCRUD(CRUDView):
 class EntradaCRUD(CRUDView):
     model = Entrada
     related_fields = []
-    list_fields = ['evento','tarifa','nombre_destinatario','dni_destinatario','nro_socio_destinatario',]
+    list_fields = ['evento', 'tarifa', 'nombre_destinatario', 'dni_destinatario', 'nro_socio_destinatario',]
     update_form = EntradaForm
     add_form = EntradaForm
     paginate_by = 20
     paginate_position = 'Bottom'  # Both | Bottom
     paginate_template = 'cruds/pagination/enumeration.html'
     inlines = []
-    views_available =['create','list', 'update','delete' ]
+    views_available =['create', 'list', 'update', 'delete' ]
 
-class ReportePedidosPDF(TemplateView):
-    template_name = 'reportes/'
+
+class Detalle_Pedidos_PDF(TemplateView):
+    template_name = 'reportes/detalle_pedidos_pdf.html'
+
+    def get(self, request, *args, **kwargs):
+        html_string = render_to_string(self.template_name, self.get_context_data())
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        result = html.write_pdf()
+
+        response = HttpResponse(content_type='application/pdf;')
+        filename = 'OT_apellido_paciente_nro.pdf'
+        response['Content-Disposition'] = 'inline; filename=%s' % filename
+        response['Content-Transfer-Encoding'] = 'binary'
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            output.write(result)
+            output.flush()
+            output = open(output.name, 'rb')
+            response.write(output.read())
+
+        return response
+
+    def get_context_data(self, **kwargs):
+        context = super(Detalle_Pedidos_PDF, self).get_context_data()
+        _id = self.kwargs.get('pk')
+        eventos = Evento.objects.all()
+        if _id:
+            eventos = eventos.filter(id=_id)
+        context['eventos'] = eventos.order_by('fecha')
+
+        return context
