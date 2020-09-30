@@ -42,7 +42,6 @@ INSTALLED_APPS = [
 
     'crispy_forms',
     'django_select2',
-    'easy_thumbnails',
     'image_cropping',
     'django_ajax',
     'cruds_adminlte'
@@ -122,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'es-ar'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -146,16 +145,22 @@ IMAGE_CROPPING_JQUERY_URL = None
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-from easy_thumbnails.conf import Settings as thumbnail_settings
-THUMBNAIL_PROCESSORS = (
-    'image_cropping.thumbnail_processors.crop_corners',
-) + thumbnail_settings.THUMBNAIL_PROCESSORS
 
 LOGIN_REDIRECT_URL = '/login'
 LOGOUT_REDIRECT_URL = '/'
 
-TIME_FORMAT = '%H:%M:%S'
-DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
-DATE_FORMAT = '%d-%m-%y'
+TIME_FORMAT = 'h:i A'
+DATETIME_FORMAT = 'dd/mm/yyyy H:i:s'
+DATE_FORMAT = "dd/mm/yyyy"
 
 TIME_INPUT_FORMATS = ['%I:%M %p']
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale/'),)
+LANGUAGES = [
+    ('es', ('Spanish')),
+    ('en', ('English')),
+]

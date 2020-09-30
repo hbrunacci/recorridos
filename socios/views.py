@@ -201,7 +201,7 @@ class SociosCRUD(CRUDView):
     paginate_by = 50
     paginate_position = 'Bottom'  # Both | Bottom
     paginate_template = 'cruds/pagination/enumeration.html'
-    inlines = [Direccion_AjaxCRUD, Telefono_AjaxCRUD, Comentarios_AjaxCRUD, ]
+    inlines = [Telefono_AjaxCRUD, Comentarios_AjaxCRUD, ]
 
 
 def get_user_queryset(user, queryset):

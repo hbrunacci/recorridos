@@ -37,6 +37,6 @@ urlpatterns = [
 ]
 
 
-urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
+# urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
 
 
