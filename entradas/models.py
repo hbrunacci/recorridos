@@ -130,7 +130,7 @@ class Entrada(BaseModel):
 
 
 class LimiteReserva(BaseModel):
-    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, null=False, blank=False, related_name='limites')
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, null=False, blank=True, related_name='limites')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False,related_name='limites')
     tarifa = models.ForeignKey(Tarifa, on_delete=models.CASCADE, null=False, blank=False, related_name='limites')
     cantidad = models.IntegerField(null=False, blank=False)
