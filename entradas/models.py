@@ -115,8 +115,8 @@ class Pedido(BaseModel):
 
 
 class Entrada(BaseModel):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, null=False, blank=False, related_name='entradas')
-    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, null=False, blank=False, related_name='entradas')
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, null=False, blank=True, related_name='entradas')
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, null=False, blank=True, related_name='entradas')
     tarifa = models.ForeignKey(Tarifa, on_delete=models.CASCADE, null=False, blank=False, related_name='entradas')
     nombre_destinatario = models.CharField(max_length=50, null=False, blank=False)
     dni_destinatario = models.CharField(max_length=8, null=False, blank=False)
