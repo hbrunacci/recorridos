@@ -9,7 +9,7 @@
             <li class="header">{% block nav_heading %}Menu Principal{% endblock %}</li>
             {% block nav_links %}
                 {% if user.is_authenticated %}
-                    {% if user.has_perm.socios.view_domicilios %}
+                    {% if perms.socios.view_domicilios %}
             <li>
                 <a href="{% url 'socios_domicilios_list' %}">
                     <i class="fa fa-pencil"></i> <span>{% trans "Socios" %}</span>

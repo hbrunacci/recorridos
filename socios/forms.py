@@ -107,6 +107,13 @@ class FiltrosForm(forms.ModelForm):
             Field('partido', wrapper_class="col-md-4"),
             Field('provincia', wrapper_class="col-md-4"),
         )
+        self.helper.layout.append(
+            FormActions(
+                Submit('submit', _('Submit'), css_class='btn btn-primary'),
+                HTML("""{% load i18n %}<a class="btn btn-danger"
+                         href="{{ url_delete }}">{% trans 'Delete' %}</a>"""),
+            )
+        )
 
 
 class ComentarioForm(forms.ModelForm):

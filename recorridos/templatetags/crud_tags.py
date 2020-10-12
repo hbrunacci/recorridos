@@ -116,7 +116,7 @@ def crud_fields(obj, fields=None):
     """
     if fields is None:
         fields = utils.get_fields(type(obj))
-    elif isinstance(fields, six.string_types):
+    elif isinstance(fields, str):
         field_names = [f.strip() for f in fields.split(',')]
         fields = utils.get_fields(type(obj), include=field_names)
 

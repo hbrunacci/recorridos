@@ -39,6 +39,8 @@ class Personas(BaseModel):
         abstract = True
         unique_together = (('tipo_documento', 'numero_documento'),)
 
+        def __str__(self):
+            return self.apellidos + ' ' + self.nombres
 
 class Socios(Personas):
     nro_socio = models.CharField(max_length=10, verbose_name='Numero de Socio')
@@ -96,6 +98,11 @@ class Emails(BaseModel):
         verbose_name_plural = 'Emails'
         ordering = ['chequeado']
 
+
+    def __str__(self):
+        return self.email
+
+
 class Telefonos(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='telefonos')
     telefono = models.CharField(max_length=20)
@@ -106,6 +113,9 @@ class Telefonos(BaseModel):
         verbose_name = 'Telefono'
         verbose_name_plural = 'Telefonos'
         ordering = ['chequeado']
+
+    def __str__(self):
+        return self.telefono
 
 class Domicilios(BaseModel):
     socio = models.ForeignKey(Socios, on_delete=models.CASCADE, blank=True, related_name='domicilio')
@@ -128,7 +138,7 @@ class Domicilios(BaseModel):
         ordering = ['codigo_postal', '-calle']
 
     def __str__(self):
-        return self.id
+        return F'{self.calle} {self.numero} {self.piso} {self.departamento}'
 
     def __unicode__(self):
         return self.calle
@@ -177,3 +187,6 @@ class Filtro(BaseModel):
         verbose_name_plural = 'Filtros'
         verbose_name = 'Filtro'
         ordering = ['-usuario']
+
+    def __str__(self):
+        return self.nombre_filtro
