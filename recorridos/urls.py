@@ -6,7 +6,7 @@ from django.conf.urls import url, include
 
 from entradas.views import EventoCRUD, PedidoCRUD, Detalle_Pedidos_PDF
 
-from socios.views import SociosCRUD, FiltroCRUD, IndexView, DomiciliosCRUD
+from socios.views import SociosCRUD, FiltroCRUD, IndexView, DomiciliosCRUD, Listado_Socios_PDF
 
 from django.apps import apps
 from cruds_adminlte.urls import crud_for_model
@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^login/$', IndexView.as_view()),
     url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
     re_path(r'^reportes/pedidosdetalle/(?P<pk>\d+)/$', Detalle_Pedidos_PDF.as_view(), name='detalle_pedidos_pdf'),
+    re_path(r'^reportes/listadodetalle/(?P<pk>\d+)/$', Listado_Socios_PDF.as_view(), name='listado_socios_pdf'),
     re_path(r'', include(filtrosCRUD.get_urls())),
     re_path(r'', include(sociosCRUD.get_urls())),
     re_path(r'', include(domiciliosCRUD.get_urls())),

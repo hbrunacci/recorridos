@@ -1,0 +1,101 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Listado de socios</title>
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 0.5cm;
+        }
+
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 5px;
+            background-color: #fff;
+        }
+
+        .table th,
+        .table td {
+            padding: 5px;
+            vertical-align: top;
+            border-top: 1px solid #000;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #000;
+        }
+
+        .table tbody + tbody {
+            border-top: 2px solid #000;
+        }
+
+        .table .table {
+            background-color: #fff;
+            font-size: 10px;
+        }
+
+        .list-group {
+            display: block;
+            width: 100%;
+            list-style: none;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .list-group p {
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
+            list-style: none;
+            font-size: 1em;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>Reporte detallado de socios </h3>
+        </div>
+
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Calle</th>
+                <th>Ciudad</th>
+                <th>Partido</th>
+                <th>C_Postal</th>
+                <th>Apellido</th>
+                <th>Categoria</th>
+                <th>Nro Socio</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for direccion in Direcciones %}
+                      <tr>
+                          <td style="text-align: right">{{ direccion.calle }} </td>
+                          <td style="text-align: right">{{ direccion.ciudad }} </td>
+                          <td style="text-align: right">{{ direccion.partido }} </td>
+                          <td style="text-align: right">{{ direccion.codigo_postal }} </td>
+                          <td style="text-align: right">{{ direccion.socio.apellidos }} </td>
+                          <td style="text-align: right">{{ direccion.socio.categoria }} </td>
+                          <td style="text-align: right">{{ direccion.socio.nro_socio }} </td>
+                      </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

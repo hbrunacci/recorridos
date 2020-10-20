@@ -16,7 +16,9 @@ from .forms import ComentarioForm, SociosForm, FiltrosForm, DomiciliosForm, Filt
 
 from django.http.response import HttpResponse
 from cruds_adminlte.templatetags.crud_tags import crud_inline_url
-
+from weasyprint import HTML, CSS
+from django.template.loader import render_to_string
+import tempfile
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -208,7 +210,6 @@ def get_user_queryset(user, queryset):
     queryset = queryset.filter(socio__activo=True) \
         .exclude(socio__apellidos__isnull=True) \
         .exclude(socio__apellidos__exact='')
-    user = user
     queryset = queryset.filter(built_userfilter(user))
     return queryset
 
@@ -271,6 +272,34 @@ def get_custom_filter(filters):
     query.add(Q(activo=True), Q.AND)
     return query
 
+
+
+class Listado_Socios_PDF(TemplateView):
+    template_name = 'reportes/listado_socios_pdf.html'
+
+    def get(self, request, *args, **kwargs):
+        html_string = render_to_string(self.template_name, self.get_context_data())
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        result = html.write_pdf()
+
+        response = HttpResponse(content_type='application/pdf;')
+        filename = 'Listado_Socios.pdf'
+        response['Content-Disposition'] = 'inline; filename=%s' % filename
+        response['Content-Transfer-Encoding'] = 'binary'
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            output.write(result)
+            output.flush()
+            output = open(output.name, 'rb')
+            response.write(output.read())
+        return response
+
+    def get_context_data(self, **kwargs):
+        context = super(Listado_Socios_PDF, self).get_context_data()
+        _id = self.kwargs.get('pk')
+        queryset = get_user_queryset(self.request.user, Domicilios.objects)
+        queryset = queryset.order_by('codigo_postal', 'ciudad', 'calle')
+        context['Direcciones'] = queryset
+        return context
 
 
 
