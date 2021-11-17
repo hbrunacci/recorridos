@@ -12,7 +12,7 @@ from .models import Categorias, Socios, Filtro, Comentarios, Domicilios, Emails,
 from django.views.generic.base import TemplateView
 from django.db.models import Q
 from django import forms
-from .forms import ComentarioForm, SociosForm, FiltrosForm, DomiciliosForm, FiltrosWebForm
+from .forms import ComentarioForm, SociosForm, FiltrosForm, DomiciliosForm, FiltrosWebForm,PadronFilterForm
 
 from django.http.response import HttpResponse
 from cruds_adminlte.templatetags.crud_tags import crud_inline_url
@@ -114,11 +114,15 @@ class SociosFormFilter(forms.Form):
 class filterSocios(FormFilter):
     form = FiltrosWebForm
 
+class filterpadron(FormFilter):
+    form = PadronFilterForm
+
+
 
 class DomiciliosCRUD(CRUDView):
     model = Domicilios
     related_fields = ['socio']
-    list_fields = ['calle', 'ciudad', 'partido', 'codigo_postal', 'socio__apellidos', 'socio__categoria', 'socio__nro_socio']
+    list_fields = ['calle', 'ciudad', 'partido', 'codigo_postal', 'socio__apellidos', 'socio__categoria', 'socio__nro_socio','socio__padron']
     update_form = DomiciliosForm
     add_form = DomiciliosForm
     paginate_by = 50
@@ -127,7 +131,7 @@ class DomiciliosCRUD(CRUDView):
     inlines = [Comentarios_AjaxCRUD, Telefono_AjaxCRUD,]
     views_available = ['list', 'update', 'detail', ]
     split_space_search = False
-    list_filter = ['calle', filterSocios]
+    list_filter = ['calle', filterSocios, 'socio__padron']
     search_fields = ['socio__numero_documento', 'calle', 'ciudad','codigo_postal','socio__categoria']
     template_name_base = 'domicilio_crud'
 
@@ -192,7 +196,7 @@ class SociosCRUD(CRUDView):
     #          'fecha_nacimiento', 'domicilio_particular', 'telefono', 'telefono_aux', 'email', ]
     fields = '__all__'
     related_fields = ['codigo_postal']
-    list_fields = ['apellidos', 'nombres', 'categoria', 'domicilio__codigo_postal']
+    list_fields = ['apellidos', 'nombres', 'categoria', 'padron', 'domicilio']
     display_fields = ['apellidos', 'nombres', 'categoria', 'domicilio']
     list_filter = ['categoria', 'fecha_ingreso', 'fecha_nacimiento', ]
     views_available = ['list', 'update', 'detail', ]

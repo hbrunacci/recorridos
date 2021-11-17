@@ -46,6 +46,8 @@ class DomiciliosForm(forms.ModelForm):
                         href="{{ url_list }}">{% trans 'Volver' %}</a>"""),
             ))
 
+class PadronFilterForm(forms.ModelForm):
+    pass
 
 class FiltrosWebForm(forms.ModelForm):
     class Meta:

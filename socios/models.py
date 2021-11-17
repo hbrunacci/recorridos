@@ -30,10 +30,10 @@ class BaseModel(models.Model):
 class Personas(BaseModel):
     apellidos = models.CharField(max_length=50)
     nombres = models.CharField(max_length=50)
-    tipo_documento = models.CharField(max_length=10)
+    tipo_documento = models.CharField(max_length=10, default='DNI')
     numero_documento = models.CharField(max_length=50)
     fecha_nacimiento = models.DateField(verbose_name='Fecha de Nacimiento', null=True)
-    estado_civil = models.CharField(max_length=20, verbose_name='Estado Civil')
+    estado_civil = models.CharField(max_length=20, verbose_name='Estado Civil', default='No Indica')
 
     class Meta:
         abstract = True
@@ -44,12 +44,13 @@ class Personas(BaseModel):
 
 class Socios(Personas):
     nro_socio = models.CharField(max_length=10, verbose_name='Numero de Socio')
-    categoria = models.CharField(max_length=20, verbose_name='Categoria')
+    categoria = models.CharField(max_length=30, verbose_name='Categoria')
     fecha_ingreso = models.DateField(verbose_name='Fecha de Ingreso', null=True)
     fecha_baja = models.DateField(verbose_name='Fecha de Baja', null=True)
     ucp = models.CharField(max_length=10, verbose_name='Ultima cuota paga', null=True)
     estado = models.CharField(max_length=20, verbose_name='Estado', default='')
     activo = models.BooleanField(default=True)
+    padron = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Socio'
@@ -141,7 +142,7 @@ class Domicilios(BaseModel):
         return F'{self.calle} {self.numero} {self.piso} {self.departamento}'
 
     def __unicode__(self):
-        return self.calle
+        return F'{self.calle} {self.numero} {self.piso} {self.departamento}'
 
 
 class Comentarios(BaseModel):
